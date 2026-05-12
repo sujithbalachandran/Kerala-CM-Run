@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kerala CM Run</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Arial,sans-serif;
+  overflow:hidden;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  height:100vh;
+  text-align:center;
+}
+
+h1{
+  color:#fff;
+  margin:15px 0;
+}
+
+/* MENU */
+
+#menu{
+  background:#fff;
+  width:600px;
+  max-width:95%;
+  margin:30px auto;
+  padding:30px;
+  border-radius:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+#menu h2{
+  margin-bottom:10px;
+}
+
+#menu p{
+  color:#666;
+  margin-bottom:25px;
+}
+
+.player-options{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.player-btn{
+  width:150px;
+  padding:20px;
+  border-radius:12px;
+  border:3px solid #ddd;
+  background:#fff;
+  cursor:pointer;
+  transition:0.3s;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.player-btn:hover{
+  transform:translateY(-5px);
+  box-shadow:0 5px 20px rgba(0,0,0,0.2);
+}
+
+.player-btn.kc{
+  border-color:#d4202a;
+  color:#d4202a;
+}
+
+.player-btn.vd{
+  border-color:#1e5a96;
+  color:#1e5a96;
+}
+
+.player-btn.rc{
+  border-color:#ff9900;
+  color:#ff9900;
+}
+
+.player-icon img{
+  width:70px;
+  height:70px;
+  margin-bottom:10px;
+}
+
+/* GAME */
+
+#game{
+  width:95vw;
+  max-width:1000px;
+  height:420px;
+  margin:auto;
+  position:relative;
+  overflow:hidden;
+  background:#fff;
+  border-radius:10px;
+  border:4px solid #333;
+  display:none;
+}
+
+/* BG */
+
+#bg{
+  position:absolute;
+  width:200%;
+  height:100%;
+  background:linear-gradient(#a5d6a7,#e8f5e9);
+  animation:bgmove 6s linear infinite;
+}
+
+@keyframes bgmove{
+  from{ left:0; }
+  to{ left:-100%; }
+}
+
+/* PLAYER */
+
+#player{
+  width:110px;
+  height:110px;
+  position:absolute;
+  left:50px;
+  bottom:0;
+  background-size:contain;
+  background-repeat:no-repeat;
+  background-position:center;
+  z-index:10;
+}
+
+/* OBSTACLE */
+
+#obstacle{
+  width:90px;
+  height:70px;
+  position:absolute;
+  right:-150px;
+  bottom:0;
+  background:#f0f0f0;
+  border:2px solid #999;
+  border-radius:8px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:bold;
+  padding:5px;
+}
+
+.seat-icon{
+  font-size:28px;
+}
+
+/* TOUCH */
+
+#touchControl{
+  position:absolute;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  background:rgba(0,0,0,0.3);
+  border:2px solid rgba(255,255,255,0.5);
+  display:none;
+  z-index:50;
+}
+
+/* GAME OVER */
+
+#gameOverBox{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:#fff;
+  padding:35px;
+  border-radius:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  display:none;
+  z-index:100;
+}
+
+#gameOverBox h2{
+  margin-bottom:20px;
+}
+
+#winnerImage{
+  width:100px;
+  height:100px;
+}
+
+#winnerName{
+  font-size:22px;
+  margin-top:10px;
+  font-weight:bold;
+}
+
+#restartBtn{
+  margin-top:20px;
+  padding:12px 25px;
+  border:none;
+  border-radius:8px;
+  background:#667eea;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+  #game{
+    width:100vw;
+    height:70vh;
+    border:none;
+    border-radius:0;
+  }
+
+  .player-btn{
+    width:100px;
+    font-size:14px;
+  }
+
+  #player{
+    width:80px;
+    height:80px;
+  }
+
+  #touchControl{
+    display:block;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h1>🗳️ Kerala CM Run 🏃</h1>
+
+<!-- MENU -->
+
+<div id="menu">
+
+  <h2>Select Your Leader</h2>
+  <p>Choose your Leader for Kerala's CM!</p>
+
+  <div class="player-options">
+
+    <button class="player-btn kc" onclick="startGame('KC')">
+      <div class="player-icon">
+        <img src="ldf.png">
+      </div>
+      <div>KC</div>
+    </button>
+
+    <button class="player-btn vd" onclick="startGame('VD')">
+      <div class="player-icon">
+        <img src="udf.png">
+      </div>
+      <div>VD</div>
+    </button>
+
+    <button class="player-btn rc" onclick="startGame('RC')">
+      <div class="player-icon">
+        <img src="bjp.png">
+      </div>
+      <div>RC</div>
+    </button>
+
+  </div>
+
+</div>
+
+<!-- GAME -->
+
+<div id="game">
+
+  <div id="bg"></div>
+
+  <div id="player"></div>
+
+  <div id="obstacle">
+    <div class="seat-icon">🏛️</div>
+    <span id="label"></span>
+  </div>
+
+  <div id="touchControl"></div>
+
+  <!-- GAME OVER -->
+
+  <div id="gameOverBox">
+
+    <h2 id="gameOverTitle"></h2>
+
+    <img id="winnerImage">
+
+    <div id="winnerName"></div>
+
+    <button id="restartBtn" onclick="location.reload()">
+      Restart Game
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+
+/* AUDIO MANAGER */
+
+const AudioManager = {
+
+  ctx:null,
+
+  init(){
+
+    if(!this.ctx){
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    return this.ctx;
+  },
+
+  /* JUMP */
+
+  jump(){
+
+    let c=this.init();
+
+    let o=c.createOscillator();
+    let g=c.createGain();
+
+    o.connect(g);
+    g.connect(c.destination);
+
+    o.type="square";
+
+    o.frequency.setValueAtTime(700,c.currentTime);
+    o.frequency.exponentialRampToValueAtTime(
+      1000,
+      c.currentTime+0.12
+    );
+
+    g.gain.setValueAtTime(0.7,c.currentTime);
+
+    g.gain.exponentialRampToValueAtTime(
+      0.01,
+      c.currentTime+0.15
+    );
+
+    o.start();
+    o.stop(c.currentTime+0.15);
+  },
+
+  /* SCORE */
+
+  score(){
+
+    let c=this.init();
+
+    let notes=[523,659,784];
+
+    notes.forEach((freq,i)=>{
+
+      let o=c.createOscillator();
+      let g=c.createGain();
+
+      o.connect(g);
+      g.connect(c.destination);
+
+      o.type="triangle";
+
+      o.frequency.value=freq;
+
+      g.gain.setValueAtTime(
+        0.55,
+        c.currentTime+(i*0.05)
+      );
+
+      g.gain.exponentialRampToValueAtTime(
+        0.01,
+        c.currentTime+(i*0.05)+0.2
+      );
+
+      o.start(c.currentTime+(i*0.05));
+      o.stop(c.currentTime+(i*0.05)+0.2);
+
+    });
+  },
+
+  /* GAME OVER */
+
+  gameOver(){
+
+    let c=this.init();
+
+    let o=c.createOscillator();
+    let g=c.createGain();
+
+    o.connect(g);
+    g.connect(c.destination);
+
+    o.type="sawtooth";
+
+    o.frequency.setValueAtTime(250,c.currentTime);
+
+    o.frequency.exponentialRampToValueAtTime(
+      40,
+      c.currentTime+0.5
+    );
+
+    g.gain.setValueAtTime(0.8,c.currentTime);
+
+    g.gain.exponentialRampToValueAtTime(
+      0.01,
+      c.currentTime+0.5
+    );
+
+    o.start();
+    o.stop(c.currentTime+0.5);
+  },
+
+  /* WIN */
+
+  victory(){
+
+    let c=this.init();
+
+    let notes=[523,659,784,1046];
+
+    notes.forEach((freq,i)=>{
+
+      let o=c.createOscillator();
+      let g=c.createGain();
+
+      o.connect(g);
+      g.connect(c.destination);
+
+      o.type="triangle";
+
+      o.frequency.value=freq;
+
+      g.gain.setValueAtTime(
+        0.65,
+        c.currentTime+(i*0.1)
+      );
+
+      g.gain.exponentialRampToValueAtTime(
+        0.01,
+        c.currentTime+(i*0.1)+0.3
+      );
+
+      o.start(c.currentTime+(i*0.1));
+      o.stop(c.currentTime+(i*0.1)+0.3);
+
+    });
+
+  }
+
+};
+
+/* DATA */
+
+const seats = [
+  "പ്രവർത്തന പരിചയം",
+  "ജനവികാരം",
+  "പാർട്ടിക്കുള്ളിലെ സ്വാധീനം",
+  "എംഎൽഎമാരുടെ പിന്തുണ",
+  "ഘടകകക്ഷി നിലപാട്",
+  "ഹൈക്കമാൻഡിന്റെ തീരുമാനം",
+
+];
+
+const partyData = {
+
+  "KC":{
+    image:"ldf.png",
+    color:"#d4202a"
+  },
+
+  "VD":{
+    image:"udf.png",
+    color:"#1e5a96"
+  },
+
+  "RC":{
+    image:"bjp.png",
+    color:"#ff9900"
+  }
+
+};
+
+/* ELEMENTS */
+
+let player=document.getElementById("player");
+let obstacle=document.getElementById("obstacle");
+let label=document.getElementById("label");
+
+let game=document.getElementById("game");
+let menu=document.getElementById("menu");
+
+let touch=document.getElementById("touchControl");
+
+let gameOverBox=document.getElementById("gameOverBox");
+let gameOverTitle=document.getElementById("gameOverTitle");
+
+let winnerImage=document.getElementById("winnerImage");
+let winnerName=document.getElementById("winnerName");
+
+/* VARIABLES */
+
+let currentPlayer="";
+let velocity=0;
+let gravity=0.7;
+let isJumping=false;
+let gameOver=false;
+let moveInterval=null;
+let index=0;
+
+/* START */
+
+function startGame(name){
+
+  currentPlayer=name;
+
+  menu.style.display="none";
+  game.style.display="block";
+
+  let info=partyData[name];
+
+  player.style.backgroundImage=`url(${info.image})`;
+
+  gameOver=false;
+  index=0;
+
+  nextObstacle();
+  moveObstacle();
+}
+
+/* NEXT */
+
+function nextObstacle(){
+
+  if(index >= seats.length){
+
+    gameOver=true;
+
+    AudioManager.victory();
+
+    gameOverTitle.innerText="🏆 YOU WON";
+
+    winnerImage.src=partyData[currentPlayer].image;
+
+    winnerName.innerText=currentPlayer;
+    winnerName.style.color=partyData[currentPlayer].color;
+
+    gameOverBox.style.display="block";
+
+    return;
+  }
+
+  label.innerText=seats[index++];
+}
+
+/* MOVE */
+
+function moveObstacle(){
+
+  obstacle.style.right="-150px";
+
+  moveInterval=setInterval(()=>{
+
+    if(gameOver){
+      clearInterval(moveInterval);
+      return;
+    }
+
+    let r=parseInt(obstacle.style.right);
+
+    obstacle.style.right=(r+5)+"px";
+
+    if(r > window.innerWidth){
+
+      clearInterval(moveInterval);
+
+      AudioManager.score();
+
+      nextObstacle();
+
+      moveObstacle();
+    }
+
+  },20);
+}
+
+/* JUMP */
+
+function jump(){
+
+  if(isJumping || gameOver) return;
+
+  velocity=22;
+  isJumping=true;
+
+  AudioManager.jump();
+}
+
+/* KEYBOARD */
+
+document.addEventListener("keydown",(e)=>{
+
+  if(e.code==="Space"){
+    jump();
+  }
+
+});
+
+/* TOUCH */
+
+touch.addEventListener("touchstart",(e)=>{
+
+  e.preventDefault();
+
+  jump();
+
+});
+
+game.addEventListener("touchstart",(e)=>{
+
+  if(e.target===touch) return;
+
+  jump();
+
+},{passive:false});
+
+/* GAME LOOP */
+
+setInterval(()=>{
+
+  if(gameOver) return;
+
+  let bottom=parseFloat(player.style.bottom || 0);
+
+  if(isJumping){
+
+    velocity -= gravity;
+
+    bottom += velocity;
+
+    if(bottom <= 0){
+
+      bottom = 0;
+      isJumping = false;
+    }
+
+    player.style.bottom = bottom + "px";
+  }
+
+  /* COLLISION */
+
+  let p = player.getBoundingClientRect();
+  let o = obstacle.getBoundingClientRect();
+
+  if(
+    p.right > o.left + 15 &&
+    p.left < o.right - 15 &&
+    p.bottom > o.top + 15
+  ){
+
+    gameOver=true;
+
+    AudioManager.gameOver();
+
+    gameOverTitle.innerText="💥 GAME OVER";
+
+    winnerImage.src=partyData[currentPlayer].image;
+
+    winnerName.innerText=currentPlayer;
+
+    winnerName.style.color=partyData[currentPlayer].color;
+
+    gameOverBox.style.display="block";
+  }
+
+},16);
+
+</script>
+
+</body>
+</html>
